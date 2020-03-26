@@ -106,8 +106,10 @@ client.on('message', msg => {
 				break;
 			case 'invite':
 				msg.channel.send('The server invite is https://discord.gg/7FuX6mK');
+				break;
 			case 'help':
 				displayHelpMessage(msg);
+				break;
 			default:
 				parseDieRolls(args, msg);
 				break;
