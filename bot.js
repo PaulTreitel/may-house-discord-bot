@@ -52,14 +52,16 @@ function sendRolls(args, msg, max, num) {
 }
 
 function displayHelpMessage(msg) {
-	let base = 'all commands must be put after an \'!\', like \'!help\'';
-	let help = '!help - use this command to display this help message';
+	let base = 'all commands must be put after an \'!\', like \'!mayhelp\'';
+	let help = '!mayhelp - use this command to display this help message';
 	let mc = '!mcserver - use this command to get the address of the May House Minecraft server';
-	let inv = '!invite - use this command to get the permanent invitation URL so more people can join the server'
-	let dice = '![number of dice]d[die type] [advantage|disadvantage] - use this command to simulate die rolls, for example';
+	let inv = '!invite - use this command to get the permanent invitation URL so more people can join the server';
+	let pog = '!pog drops a :PogChamp: in chat';
+	let dice1 = '![number of dice]d[die type] [advantage|disadvantage] - use this command to simulate die rolls, for example';
 	let dice2 = '!2d10 - rolls 2 10-sided dice and gives you the sum';
 	let dice3 = '!d20 advantage - rolls 2 20-sided dice and gives you the higher number';
-	msg.channel.send(base +'\n'+ help +'\n'+ mc +'\n'+ inv +'\n'+ dice +'\n'+ dice2 +'\n'+ dice3);
+	let alldice = dice1 +'\n' dice2 +'\n' dice3;
+	msg.channel.send(base +'\n'+ help +'\n'+ mc +'\n'+ inv +'\n'+ pog +'\n'+ alldice);
 }
 
 function parseDieRolls(args, msg) {
@@ -107,7 +109,10 @@ client.on('message', msg => {
 			case 'invite':
 				msg.channel.send('The server invite is https://discord.gg/7FuX6mK');
 				break;
-			case 'help':
+			case 'pog':
+				msg.channel.send(':PogChamp:');
+				break;
+			case 'mayhelp':
 				displayHelpMessage(msg);
 				break;
 			default:
