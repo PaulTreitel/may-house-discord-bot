@@ -60,7 +60,7 @@ function displayHelpMessage(msg) {
 	let dice1 = '![number of dice]d[die type] [advantage|disadvantage] - use this command to simulate die rolls, for example';
 	let dice2 = '!2d10 - rolls 2 10-sided dice and gives you the sum';
 	let dice3 = '!d20 advantage - rolls 2 20-sided dice and gives you the higher number';
-	let alldice = dice1 +'\n' dice2 +'\n' dice3;
+	let alldice = dice1 +'\n'+ dice2 +'\n'+ dice3;
 	msg.channel.send(base +'\n'+ help +'\n'+ mc +'\n'+ inv +'\n'+ pog +'\n'+ alldice);
 }
 
