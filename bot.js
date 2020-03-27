@@ -3,7 +3,6 @@
  * BOT INITIALIZATION
  */
 
-socket = io.listen(process.env.PORT);
 // Run dotenv
 require('dotenv').config();
 
