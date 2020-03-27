@@ -84,6 +84,11 @@ function parseDieRolls(args, msg) {
 		sendRolls(args, msg, die, numRolls);
 }
 
+function sendPog(msg) {
+	let pog = client.emojis.cache.find(emoji => emoji.name === "PogChamp");
+	msg.channel.send(`${pog}`);
+}
+
 /* 
  * BOT COMMAND EVENT HANDLERS
  */
@@ -110,7 +115,7 @@ client.on('message', msg => {
 				msg.channel.send('The server invite is https://discord.gg/7FuX6mK');
 				break;
 			case 'pog':
-				msg.channel.send(':PogChamp:');
+				sendPog(msg);
 				break;
 			case 'mayhelp':
 				displayHelpMessage(msg);
