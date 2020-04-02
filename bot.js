@@ -94,7 +94,7 @@ function sendPog(msg) {
  */
 
 client.on('guildMemberAdd', user => {
-	let lounge_channel = user.guild.channels.cache.find(channel => channel,name === 'the-lounge');
+	let lounge_channel = user.guild.channels.cache.find(channel => channel.name === 'the-lounge');
 	let name_key_channel = user.guild.channels.cache.find(channel => channel.name === 'name-key');
 	let msg = `Welcome ${user} to the May House Discord. Please drop your real name in the ${name_key_channel} channel`;
 	if (!lounge_channel)
