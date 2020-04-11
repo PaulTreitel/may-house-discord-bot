@@ -24,18 +24,17 @@ function getRandInt(min, max) {
 	return Math.floor(Math.random() * (max - min + 1) ) + min;
 }
 
-function sendRolls(args, msg, max, num) {
+function sendRolls(args, msg, max, num, mod) {
 	let response = 'Your die roll is ';
+	let rolls = [];
+	let sum = 0;
 	if (args.length >= 2) {
-		let roll1 = getRandInt(1, max);
-		let roll2 = getRandInt(1, max);
 		if (args[1] == 'advantage' || args[1] == 'adv') {
 			response += '(' + roll1 + ', ' + roll2 + ') ==> ' + Math.max(roll1, roll2);
 		} else if (args[1] == 'disadvantage' || args[1] == 'disadv') {
 			response += '(' + roll1 + ', ' + roll2 + ') ==> ' + Math.min(roll1, roll2);
 		}
 	} else {
-		let sum = 0;
 		if (num > 1)
 			response += '(';
 		for (let i = 0; i < num; i++) {
@@ -48,6 +47,7 @@ function sendRolls(args, msg, max, num) {
 			response = response.substring(0, response.length -2) + ') ==> ';
 		response += sum;
 	}
+	response += mod;
 	msg.channel.send(response);
 }
 
@@ -76,12 +76,25 @@ function parseDieRolls(args, msg) {
 	if (isNaN(numRolls) || numRolls > 100)
 		return;
 	
-	let die = parseInt(cmd.substring(d+1));
+	let modplus = cmd.indexOf('+');
+	let modminus = cmd.indexOf('-');
+	let modIdx = (modplus == -1) ? modminus : modplus;
+	let die = parseInt(cmd.substring(d+1, modIdx));
 	if (isNaN(die))
 		return;
+
+	let mod = 0;
+	if (modIdx != 0) {
+		mod = parseInt(cmd.substring(modIdx));
+		if (modplus == -1)
+			mod = -mod;
+	}
+
+
+
 	let validDice = [100, 20, 12, 10, 8, 6, 4];
 	if (validDice.includes(die))
-		sendRolls(args, msg, die, numRolls);
+		sendRolls(args, msg, die, numRolls, mod);
 }
 
 function sendPog(msg) {
@@ -94,7 +107,7 @@ function sendPog(msg) {
  */
 
 client.on('guildMemberAdd', user => {
-	let lounge_channel = user.guild.channels.cache.find(channel => channel,name === 'the-lounge');
+	let lounge_channel = user.guild.channels.cache.find(channel => channel.name === 'the-lounge');
 	let name_key_channel = user.guild.channels.cache.find(channel => channel.name === 'name-key');
 	let msg = `Welcome ${user} to the May House Discord. Please drop your real name in the ${name_key_channel} channel`;
 	if (!lounge_channel)
