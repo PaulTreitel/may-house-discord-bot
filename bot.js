@@ -20,34 +20,46 @@ client.login(process.env.DISCORD_TOKEN);
  * BOT FUNCTIONS
  */
 
-function getRandInt(min, max) {
-	return Math.floor(Math.random() * (max - min + 1) ) + min;
+function getRandInt(min, mx) {
+	return Math.floor(Math.random() * (mx - min + 1) ) + min;
 }
 
-function sendRolls(args, msg, max, num, mod) {
+function sendRolls(args, msg, mx, num, mod) {
+	console.log("in: args: ["+ args.toString() +"], max: "+ mx +", num: "+ num +", mod: "+ mod);
 	let response = 'Your die roll is ';
 	let rolls = [];
 	let sum = 0;
-	if (args.length >= 2) {
-		if (args[1] == 'advantage' || args[1] == 'adv') {
-			response += '(' + roll1 + ', ' + roll2 + ') ==> ' + Math.max(roll1, roll2);
-		} else if (args[1] == 'disadvantage' || args[1] == 'disadv') {
-			response += '(' + roll1 + ', ' + roll2 + ') ==> ' + Math.min(roll1, roll2);
-		}
-	} else {
-		if (num > 1)
-			response += '(';
-		for (let i = 0; i < num; i++) {
-			let roll = getRandInt(1, max);
-			if (num > 1)
-				response += roll + ', ';
-			sum += roll;
-		}
-		if (num > 1)
-			response = response.substring(0, response.length -2) + ') ==> ';
-		response += sum;
+	let adv = 0;
+	let finalNum = 0;
+
+	if (args.length >= 2 && args[1] == 'adv')
+		adv = 1;
+	else if (args.length >= 2 && args[1] == 'disadv')
+		adv = -1;
+	if (adv != 0 && num == 1)
+		num = 2;
+	
+	for (let i = 0; i < num; i++) {
+		let roll = getRandInt(1, mx);
+		rolls.push(roll);
+		sum += roll;
 	}
-	response += mod;
+	if (num > 1)
+		response += "["+ rolls.toString() +"] ==> ";
+	
+	
+	if (adv == 1)
+		finalNum = Math.max(...rolls);
+	else if (adv == -1)
+		finalNum = (Math.min(...rolls));
+	else
+		finalNum = sum;
+
+	if (mod != 0)
+		response += finalNum +" + "+ mod +" = ";
+	finalNum += mod;
+	response += finalNum;
+
 	msg.channel.send(response);
 }
 
@@ -57,7 +69,7 @@ function displayHelpMessage(msg) {
 	let mc = '!mcserver - use this command to get the address of the May House Minecraft server';
 	let inv = '!invite - use this command to get the permanent invitation URL so more people can join the server';
 	let pog = '!pog drops a :PogChamp: in chat';
-	let dice1 = '![number of dice]d[die type] [advantage|disadvantage] - use this command to simulate die rolls, for example';
+	let dice1 = '![number of dice]d[die type] [adv|disadv] - use this command to simulate die rolls, for example';
 	let dice2 = '!2d10 - rolls 2 10-sided dice and gives you the sum';
 	let dice3 = '!d20 advantage - rolls 2 20-sided dice and gives you the higher number';
 	let alldice = dice1 +'\n'+ dice2 +'\n'+ dice3;
@@ -73,25 +85,27 @@ function parseDieRolls(args, msg) {
 	let numRolls = 1;
 	if (d != 0)
 		numRolls = parseInt(cmd.substring(0, d));
+	console.log("numRolls: "+ numRolls);
 	if (isNaN(numRolls) || numRolls > 100)
 		return;
 	
 	let modplus = cmd.indexOf('+');
 	let modminus = cmd.indexOf('-');
 	let modIdx = (modplus == -1) ? modminus : modplus;
+	modIdx = (modIdx == -1) ? cmd.length : modIdx;
 	let die = parseInt(cmd.substring(d+1, modIdx));
 	if (isNaN(die))
 		return;
 
 	let mod = 0;
-	if (modIdx != 0) {
+	if (modIdx != cmd.length) {
 		mod = parseInt(cmd.substring(modIdx));
 		if (modplus == -1)
 			mod = -mod;
 	}
 
 
-
+	console.log("modplus: "+ modplus +", modminus: "+ modminus +", modIdx: "+ modIdx +", mod: "+ mod);
 	let validDice = [100, 20, 12, 10, 8, 6, 4];
 	if (validDice.includes(die))
 		sendRolls(args, msg, die, numRolls, mod);
