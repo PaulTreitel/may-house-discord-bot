@@ -25,7 +25,6 @@ function getRandInt(min, mx) {
 }
 
 function sendRolls(args, msg, mx, num, mod) {
-	console.log("in: args: ["+ args.toString() +"], max: "+ mx +", num: "+ num +", mod: "+ mod);
 	let response = 'Your die roll is ';
 	let rolls = [];
 	let sum = 0;
@@ -55,8 +54,10 @@ function sendRolls(args, msg, mx, num, mod) {
 	else
 		finalNum = sum;
 
-	if (mod != 0)
+	if (mod > 0)
 		response += finalNum +" + "+ mod +" = ";
+	else if (mod < 0)
+		response += finalNum +" - "+ (-mod) +" = ";
 	finalNum += mod;
 	response += finalNum;
 
@@ -85,7 +86,6 @@ function parseDieRolls(args, msg) {
 	let numRolls = 1;
 	if (d != 0)
 		numRolls = parseInt(cmd.substring(0, d));
-	console.log("numRolls: "+ numRolls);
 	if (isNaN(numRolls) || numRolls > 100)
 		return;
 	
@@ -100,12 +100,8 @@ function parseDieRolls(args, msg) {
 	let mod = 0;
 	if (modIdx != cmd.length) {
 		mod = parseInt(cmd.substring(modIdx));
-		if (modplus == -1)
-			mod = -mod;
 	}
 
-
-	console.log("modplus: "+ modplus +", modminus: "+ modminus +", modIdx: "+ modIdx +", mod: "+ mod);
 	let validDice = [100, 20, 12, 10, 8, 6, 4];
 	if (validDice.includes(die))
 		sendRolls(args, msg, die, numRolls, mod);
