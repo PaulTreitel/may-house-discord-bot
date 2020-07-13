@@ -196,6 +196,11 @@ client.on('message', msg => {
 			case 'invite':
 				msg.channel.send('The server invite is https://discord.gg/7FuX6mK');
 				break;
+			case 'Nerd':
+			case 'NERD':
+			case 'nerd':
+				msg.channel.send('Nerd!!');
+				break;
 			case 'pog':
 				sendPog(msg);
 				break;
