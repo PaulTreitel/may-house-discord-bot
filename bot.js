@@ -122,7 +122,7 @@ function parseDice(args, msg) {
 	else
 		ret_str = `${ret_str} => ${sum}`;
 
-	msg.channel.send(ret_str);
+	msg.reply(ret_str);
 }
 
 function parseRoll(ret_str, to_sum, cmd, sign, adv) {
