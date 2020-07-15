@@ -94,6 +94,8 @@ function parseDice(args, msg) {
 			if (sign < 0)
 				ret_str = ret_str.substring(0, ret_str.length - 2) +"- ";
 			ret_str = parseRoll(ret_str, to_sum, cur_expr, sign, adv);
+			if (typeof ret_str === 'undefined' || to_sum === [])
+				return;
 		}
 
 		if (next_idx > curr_idx && next_idx < cmd.length)
@@ -206,6 +208,9 @@ client.on('message', msg => {
 				break;
 			case 'mayhelp':
 				displayHelpMessage(msg);
+				break;
+			case 'r':
+				parseDice(args.splice(1), msg);
 				break;
 			default:
 				parseDice(args, msg);
