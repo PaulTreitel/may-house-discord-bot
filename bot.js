@@ -65,7 +65,6 @@ function parseDice(args, msg) {
 	let mod = 0;
 	let sign = 1;
 	let cur_expr = '';
-	let iter = 0;
 	let next_idx = 0;
 	let adv = 0;
 
@@ -74,7 +73,7 @@ function parseDice(args, msg) {
 	else if (args.length > 1 && "disadv dadv".indexOf(args[1]) != -1)
 		adv = -1;
 
-	for (let curr_idx = 0; curr_idx < cmd.length; iter++) {
+	for (let curr_idx = 0; curr_idx < cmd.length;) {
 		let sign = 1;
 		if (cmd.substring(0, 1) === "-")
 			curr_idx++;
@@ -105,9 +104,6 @@ function parseDice(args, msg) {
 
 		if (isNaN(cur_expr))
 			ret_str = ret_str + ` + `;
-
-		if (iter > 10)
-			break;
 	}
 
 	if (mod < 0)
@@ -148,10 +144,7 @@ function parseRoll(ret_str, to_sum, cmd, sign, adv) {
 		return;
 	}
 
-	let validDice = [100, 20, 12, 10, 8, 6, 4];
-	if (validDice.includes(die)) {
-		return executeRolls(ret_str, to_sum, die, numRolls, sign, adv);
-	}
+	return executeRolls(ret_str, to_sum, die, numRolls, sign, adv);
 }
 
 function sendPog(msg) {
@@ -216,5 +209,7 @@ client.on('message', msg => {
 				parseDice(args, msg);
 				break;
 		}
+	} else if (msg.toString().substring(0, 2) === '/r') {
+		parseDice(args.splice(1), msg);
 	}
 });
