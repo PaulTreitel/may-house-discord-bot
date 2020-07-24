@@ -149,6 +149,10 @@ function parseRoll(ret_str, to_sum, cmd, sign, adv) {
 	} else if (die === 69) {
 		to_sum.push(420);
 		return `${ret_str}(420)`;
+	} else if (die === 9000) {
+		return `${ret_str}I'm sory Dave, I'm afraid I can't do that`;
+	} else if (die === 42) {
+		return `${ret_str}Six by nine. Forty two. That's it. That's all there is.`;
 	}
 
 	return executeRolls(ret_str, to_sum, die, numRolls, sign, adv);
