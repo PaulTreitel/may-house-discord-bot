@@ -8,6 +8,18 @@ require('dotenv').config();
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
+let airplane = [
+	"No thank you. I take it black, like my men.",
+	"Ok give me Hamm on 5 and hold the Mayo.",
+	"I am serious...and don't call me Shirley.",
+	"There's no reason to become alarmed, and we hope you'll enjoy the rest of your flight. By the way, is there anyone on board who knows how to fly a plane?",
+	"Joey, have you ever been in a Turkish prison?",
+	"I guess the foot's on the other hand, Kramer.".
+	"I picked the wrong week to quit smoking.",
+	"I picked the wrong week to quit drinking.",
+	"I picked the wrong week to quit amphetamines.",
+	"I picked the wrong week to quit sniffing glue."
+];
 
 client.on('ready', () => {
 	console.log(`Logged in as ${client.user.tag}!`);
@@ -150,9 +162,12 @@ function parseRoll(ret_str, to_sum, cmd, sign, adv) {
 		to_sum.push(420);
 		return `${ret_str}(420)`;
 	} else if (die === 9000) {
-		return `${ret_str}I'm sory Dave, I'm afraid I can't do that`;
+		return `${ret_str}I'm sory Dave, I'm afraid I can't do that.`;
 	} else if (die === 42) {
 		return `${ret_str}Six by nine. Forty two. That's it. That's all there is.`;
+	} else if (die === 1980) {
+		let line = airplane[Math.floor(Math.random() * airplane.length)];
+		return `${ret_str}${line}`;
 	}
 
 	return executeRolls(ret_str, to_sum, die, numRolls, sign, adv);
