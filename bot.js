@@ -61,7 +61,6 @@ function parseDice(args, msg) {
 	let ret_str = '';
 	let to_sum = [];
 	let cmd = args[0];
-	let d = cmd.indexOf('d');
 	let mod = 0;
 	let sign = 1;
 	let cur_expr = '';
@@ -124,7 +123,7 @@ function parseDice(args, msg) {
 }
 
 function parseRoll(ret_str, to_sum, cmd, sign, adv) {
-	let d = cmd.indexOf('d');
+	let d = cmd.search('d|D');
 	if (d == -1) {
 		console.log('Error: no die roll');
 		return;
@@ -142,6 +141,14 @@ function parseRoll(ret_str, to_sum, cmd, sign, adv) {
 	if (isNaN(die)) {
 		console.log('Error: unkown die size');
 		return;
+	}
+
+	if (die === 420) {
+		to_sum.push(69);
+		return `${ret_str}(69)`;
+	} else if (die === 69) {
+		to_sum.push(420);
+		return `${ret_str}(420)`;
 	}
 
 	return executeRolls(ret_str, to_sum, die, numRolls, sign, adv);
@@ -180,19 +187,17 @@ client.on('guildMemberAdd', user => {
 });
 
 client.on('message', msg => {
+	let args = msg.toString().substring(1).split(' ');
 	if (msg.toString().substring(0, 1) == '!') {
-		let args = msg.toString().substring(1).split(' ');
 		let cmd = args[0];
 
-		switch (cmd) {
+		switch (cmd.toLowerCase()) {
 			case 'mcserver':
 				msg.channel.send('The Minecraft server address is mayhousesits.mc.gg');
 				break;
 			case 'invite':
 				msg.channel.send('The server invite is https://discord.gg/7FuX6mK');
 				break;
-			case 'Nerd':
-			case 'NERD':
 			case 'nerd':
 				msg.channel.send('Nerd!!');
 				break;
@@ -204,6 +209,8 @@ client.on('message', msg => {
 				break;
 			case 'r':
 				parseDice(args.splice(1), msg);
+				break;
+			case '':
 				break;
 			default:
 				parseDice(args, msg);
