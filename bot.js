@@ -8,25 +8,27 @@ require('dotenv').config();
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
+client.login(process.env.DISCORD_TOKEN);
+
 let airplane = [
 	"No thank you. I take it black, like my men.",
 	"Ok give me Hamm on 5 and hold the Mayo.",
 	"I am serious...and don't call me Shirley.",
 	"There's no reason to become alarmed, and we hope you'll enjoy the rest of your flight. By the way, is there anyone on board who knows how to fly a plane?",
 	"Joey, have you ever been in a Turkish prison?",
-	"I guess the foot's on the other hand, Kramer.".
+	"I guess the foot's on the other hand, Kramer.",
 	"I picked the wrong week to quit smoking.",
 	"I picked the wrong week to quit drinking.",
 	"I picked the wrong week to quit amphetamines.",
 	"I picked the wrong week to quit sniffing glue."
 ];
+let ninek = ["I'm sory Dave, I'm afraid I can't do that.", "His power level is OVER NINE THOUSAAAAAND"];
 
 client.on('ready', () => {
 	console.log(`Logged in as ${client.user.tag}!`);
 	client.user.setStatus("online");
 });
 
-client.login(process.env.DISCORD_TOKEN);
 
 /* 
  * BOT FUNCTIONS
@@ -36,7 +38,7 @@ function getRandInt(min, mx) {
 	return Math.floor(Math.random() * (mx - min + 1)) + min;
 }
 
-function executeRolls(ret_str, to_sum, die, num, sign, adv) {
+function executeRolls(ret_str, to_sum, die, num, sign, adv, crits) {
 	adv_list = [];
 	ret_str = ret_str + '(';
 
@@ -45,6 +47,9 @@ function executeRolls(ret_str, to_sum, die, num, sign, adv) {
 
 	for (let i = 0; i < num; i++) {
 		let roll = getRandInt(1, die);
+		crits[1]++;
+		if (roll === die)
+			crits[0]++;
 
 		if (adv == 0) {
 			to_sum.push(roll * sign);
@@ -72,6 +77,7 @@ function executeRolls(ret_str, to_sum, die, num, sign, adv) {
 function parseDice(args, msg) {
 	let ret_str = '';
 	let to_sum = [];
+	let crits = [0, 0];
 	let cmd = args[0];
 	let mod = 0;
 	let sign = 1;
@@ -103,7 +109,7 @@ function parseDice(args, msg) {
 		} else {
 			if (sign < 0)
 				ret_str = ret_str.substring(0, ret_str.length - 2) +"- ";
-			ret_str = parseRoll(ret_str, to_sum, cur_expr, sign, adv);
+			ret_str = parseRoll(ret_str, to_sum, cur_expr, sign, adv, crits);
 			if (typeof ret_str === 'undefined' || to_sum === [])
 				return;
 		}
@@ -131,10 +137,15 @@ function parseDice(args, msg) {
 	else
 		ret_str = `${ret_str} => ${sum}`;
 
+	if (crits[1] === 0)
+		ret_str = `${ret_str} and I will pour milk on your bed.`; // discovered
+	else if (crits[0] === crits[1] && crits[0] != 0)
+		ret_str = `${ret_str} CO-CO-CO-COMBO BREAKER!`; // discovered
+
 	msg.reply(ret_str);
 }
 
-function parseRoll(ret_str, to_sum, cmd, sign, adv) {
+function parseRoll(ret_str, to_sum, cmd, sign, adv, crits) {
 	let d = cmd.search('d|D');
 	if (d == -1) {
 		console.log('Error: no die roll');
@@ -156,26 +167,52 @@ function parseRoll(ret_str, to_sum, cmd, sign, adv) {
 	}
 
 	if (die === 420) {
+		crits[1]++;
 		to_sum.push(69);
-		return `${ret_str}(69)`;
+		return `${ret_str}(69)`; // discovered
 	} else if (die === 69) {
+		crits[1]++;
 		to_sum.push(420);
-		return `${ret_str}(420)`;
+		return `${ret_str}(420)`; // discovered
 	} else if (die === 9000) {
-		return `${ret_str}I'm sory Dave, I'm afraid I can't do that.`;
+		crits[1]++;
+		let line = ninek[Math.floor(Math.random() * ninek.length)];
+		return `${ret_str}${line}`;
 	} else if (die === 42) {
-		return `${ret_str}Six by nine. Forty two. That's it. That's all there is.`;
-	} else if (die === 1980) {
+		crits[1]++;
+		return `${ret_str}Six by nine. Forty two. That's it. That's all there is.`; // discovered
+	} else if (die === 80) {
+		crits[1]++;
 		let line = airplane[Math.floor(Math.random() * airplane.length)];
 		return `${ret_str}${line}`;
+	} else if (die === 67) {
+		ret_str = executeRolls(ret_str, to_sum, die, numRolls, sign, adv, crits);
+		return `${ret_str} Arion returns again!`;
+	} else if (die === 1453) {
+		ret_str = executeRolls(ret_str, to_sum, die, numRolls, sign, adv, crits);
+		return `${ret_str} CONSTANTINOPLE WILL RISE AGAIN!`;
+	} else if (die === 5) {
+		ret_str = executeRolls(ret_str, to_sum, die, numRolls, sign, adv, crits);
+		return `${ret_str} Pissboi the Fifth, reporting in.`;
+	} else if (die === 64) {
+		crits[1]++;
+		return `${ret_str}My name is Pussy Galore.`;
+	} else if (die === 106) {
+		crits[1]++;
+		return `${ret_str}Rest In Peace, Milo Malar`;
 	}
 
-	return executeRolls(ret_str, to_sum, die, numRolls, sign, adv);
+	return executeRolls(ret_str, to_sum, die, numRolls, sign, adv, crits);
 }
 
 function sendPog(msg) {
 	let pog = client.emojis.cache.find(emoji => emoji.name === "PogChamp");
 	msg.channel.send(`${pog}`);
+}
+
+function sendMilk(msg) {
+	let milk = client.emojis.cache.find(emoji => emoji.name === "pour");
+	msg.channel.send(`${milk}\n\:bed:`);
 }
 
 function displayHelpMessage(msg) {
@@ -188,7 +225,8 @@ function displayHelpMessage(msg) {
 	let dice2 = '!2d10+2 - rolls 2 10-sided dice and gives you the sum plus 2';
 	let dice3 = '!d20 advantage - rolls 2 20-sided dice and gives you the higher number';
 	let dice4 = '!4d4+d6 - rolls 4 4-sided dice and a 6-sided die and gives you the sum';
-	let alldice = dice1 +'\n'+ dice2 +'\n'+ dice3 +'\n'+ dice4;
+	let dice5 = '(The \'!r d20\' and \'/r d20\' syntaxes are also supported)'
+	let alldice = dice1 +'\n'+ dice2 +'\n'+ dice3 +'\n'+ dice4 + '\n' + dice5;
 	msg.channel.send(base +'\n'+ help +'\n'+ mc +'\n'+ inv +'\n'+ pog +'\n'+ alldice);
 }
 
@@ -207,10 +245,12 @@ client.on('guildMemberAdd', user => {
 
 client.on('message', msg => {
 	let args = msg.toString().substring(1).split(' ');
-	if (msg.toString().substring(0, 1) == '!') {
-		let cmd = args[0];
+	let msg_str = msg.toString().toLowerCase();
 
-		switch (cmd.toLowerCase()) {
+	if (msg_str.substring(0, 1) == '!') {
+		let cmd = args[0].toLowerCase();
+
+		switch (cmd) {
 			case 'mcserver':
 				msg.channel.send('The Minecraft server address is mayhousesits.mc.gg');
 				break;
@@ -222,6 +262,9 @@ client.on('message', msg => {
 				break;
 			case 'pog':
 				sendPog(msg);
+				break;
+			case 'milk':
+				sendMilk(msg);
 				break;
 			case 'mayhelp':
 				displayHelpMessage(msg);
@@ -235,7 +278,8 @@ client.on('message', msg => {
 				parseDice(args, msg);
 				break;
 		}
-	} else if (msg.toString().substring(0, 2) === '/r') {
+
+	} else if (msg_str.substring(0, 2) === '/r' || msg_str.substring(0, 2) === '/R') {
 		parseDice(args.splice(1), msg);
 	}
 });
