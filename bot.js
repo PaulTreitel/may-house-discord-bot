@@ -294,8 +294,8 @@ client.on('messageReactionRemove', async (reaction, user) => {
 client.on('guildMemberAdd', user => {
 	try {
 		let lounge_channel = user.guild.channels.cache.find(channel => channel.name === 'the-lounge');
-		let name_key_channel = user.guild.channels.cache.find(channel => channel.name === 'introductions');
-		let msg = `Welcome ${user} to the May House Discord. Please drop your real name in the ${name_key_channel} channel`;
+		let intro_channel = user.guild.channels.cache.find(channel => channel.name === 'introductions');
+		let msg = `Welcome ${user} to the May House Discord. Please introduce yourself and drop your real name in the ${intro_channel} channel`;
 		if (!lounge_channel)
 			return;
 		lounge_channel.send(msg);
