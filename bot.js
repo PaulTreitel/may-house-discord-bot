@@ -212,6 +212,11 @@ function sendPog(msg) {
 	msg.channel.send(`${pog}`);
 }
 
+function sendXmasPog(msg) {
+	let pog = client.emojis.cache.find(emoji => emoji.name === "xmaspog");
+	msg.channel.send(`${pog}`);
+}
+
 function sendMilk(msg) {
 	let milk = client.emojis.cache.find(emoji => emoji.name === "pour");
 	msg.channel.send(`${milk}\n\:bed:`);
@@ -313,7 +318,7 @@ client.on('message', msg => {
 
 		switch (cmd) {
 			case 'mcserver':
-				msg.channel.send('The Minecraft server address is mayhousesits.mc.gg');
+				msg.channel.send('The Minecraft server address is 207.244.79.120:64635');
 				break;
 			case 'mayinvite':
 				msg.channel.send('The server invite is https://discord.gg/7FuX6mK');
@@ -324,6 +329,8 @@ client.on('message', msg => {
 			case 'pog':
 				sendPog(msg);
 				break;
+			case 'xmaspog':
+				sendXmasPog(msg);
 			case 'milk':
 				sendMilk(msg);
 				break;
