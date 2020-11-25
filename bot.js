@@ -228,13 +228,14 @@ function displayHelpMessage(msg) {
 	let mc = '!mcserver - use this command to get the address of the May House Minecraft server';
 	let inv = '!mayinvite - use this command to get the permanent invitation URL so more people can join the server';
 	let pog = '!pog drops a :PogChamp: in chat';
+	let xmaspog = '!xmaspog drops an :xmaspog: in chat';
 	let dice1 = '![number of dice]d[die type]+...+[modifier] [adv|disadv|dadv] - use this command to simulate die rolls, for example';
 	let dice2 = '!2d10+2 - rolls 2 10-sided dice and gives you the sum plus 2';
 	let dice3 = '!d20 advantage - rolls 2 20-sided dice and gives you the higher number';
 	let dice4 = '!4d4+d6 - rolls 4 4-sided dice and a 6-sided die and gives you the sum';
 	let dice5 = '(The \'!r d20\' and \'/r d20\' and \'!roll\' syntaxes are also supported)'
 	let alldice = dice1 +'\n'+ dice2 +'\n'+ dice3 +'\n'+ dice4 + '\n' + dice5;
-	msg.channel.send(base +'\n'+ help +'\n'+ mc +'\n'+ inv +'\n'+ pog +'\n'+ alldice);
+	msg.channel.send(base +'\n'+ help +'\n'+ mc +'\n'+ inv +'\n'+ pog +'\n'+ + xmaspog +'\n'+ alldice);
 }
 
 function emojiToRole(emoji_name, roles_cache) {
@@ -331,6 +332,7 @@ client.on('message', msg => {
 				break;
 			case 'xmaspog':
 				sendXmasPog(msg);
+				break;
 			case 'milk':
 				sendMilk(msg);
 				break;
