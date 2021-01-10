@@ -1,5 +1,5 @@
 
-/* 
+/*
  * BOT INITIALIZATION
  */
 
@@ -32,7 +32,7 @@ client.on('ready', () => {
 });
 
 
-/* 
+/*
  * BOT FUNCTIONS
  */
 
@@ -245,7 +245,7 @@ function emojiToRole(emoji_name, roles_cache) {
 	return null;
 }
 
-/* 
+/*
  * BOT COMMAND EVENT HANDLERS
  */
 
@@ -301,9 +301,12 @@ client.on('guildMemberAdd', user => {
 	try {
 		let lounge_channel = user.guild.channels.cache.find(channel => channel.name === 'the-lounge');
 		let intro_channel = user.guild.channels.cache.find(channel => channel.name === 'introductions');
+		console.log(`lounge_channel: ${lounge_channel}, intro_channel: ${intro_channel}`);
 		let msg = `Welcome ${user} to the May House Discord. Please introduce yourself and drop your real name in the ${intro_channel} channel`;
-		if (!lounge_channel)
+		if (!lounge_channel) {
+			console.log(`lounge_channel could not be found.`);
 			return;
+		}
 		lounge_channel.send(msg);
 	} catch (error) {
 		console.error('guildMemberAdd: Something went wrong when fetching the channels: ', error);
