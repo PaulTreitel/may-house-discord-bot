@@ -6,7 +6,7 @@
 require('dotenv').config();
 
 const Discord = require('discord.js');
-const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
+const client = new Discord.Client();
 client.login(process.env.DISCORD_TOKEN);
 
 let airplane = [
@@ -22,9 +22,6 @@ let airplane = [
 	"I picked the wrong week to quit sniffing glue."
 ];
 let ninek = ["I'm sory Dave, I'm afraid I can't do that.", "His power level is OVER NINE THOUSAAAAAND"];
-let ROLE_REACTIONS_ACTIVE = false;
-let TEST_SERVER = "DeShadowWolf's Test Server";
-let PROD_SERVER = "May Haus";
 
 client.on('ready', () => {
 	console.log(`Logged in as ${client.user.tag}!`);
@@ -238,64 +235,9 @@ function displayHelpMessage(msg) {
 	msg.channel.send(base +'\n'+ help +'\n'+ mc +'\n'+ inv +'\n'+ pog +'\n'+ + xmaspog +'\n'+ alldice);
 }
 
-function emojiToRole(emoji_name, roles_cache) {
-	if (emoji_name === "❤️") {
-		return roles_cache.find(role => role.name === "the heart");
-	}
-	return null;
-}
-
 /*
  * BOT COMMAND EVENT HANDLERS
  */
-
- client.on('messageReactionAdd', async (reaction, user) => {
-	if (reaction.partial) {
-		try {
-			await reaction.fetch();
-		} catch (error) {
-			console.error('messageReactionAdd: Something went wrong when fetching the message: ', error);
-			return;
-		}
-	}
-
-	if (reaction.message.content.indexOf("OFFICIAL ROLE REACTIONS") != -1) {
-		// User doesn't have roles so we need GuildMember object
-		let react_guild = client.guilds.cache.find(guild => (guild.name === TEST_SERVER && !ROLE_REACTIONS_ACTIVE) ||
-															(guild.name === PROD_SERVER && ROLE_REACTIONS_ACTIVE));
-		let react_user = react_guild.members.cache.find(member => member.id === user.id);
-		let react_role = emojiToRole(reaction.emoji.name, react_guild.roles.cache);
-
-		if (react_role) {
-			react_user.roles.add(react_role);
-			console.log(`${react_role.name} given to ${react_user.displayName}.`);
-		}
-	}
-});
-
-client.on('messageReactionRemove', async (reaction, user) => {
-	if (reaction.partial) {
-		try {
-			await reaction.fetch();
-		} catch (error) {
-			console.error('messageReactionRemove: Something went wrong when fetching the message: ', error);
-			return;
-		}
-	}
-
-	if (reaction.message.content.indexOf("OFFICIAL ROLE REACTIONS") != -1) {
-		// User doesn't have roles so we need GuildMember object
-		let react_guild = client.guilds.cache.find(guild => (guild.name === TEST_SERVER && !ROLE_REACTIONS_ACTIVE) ||
-															(guild.name === PROD_SERVER && ROLE_REACTIONS_ACTIVE));
-		let react_user = react_guild.members.cache.find(member => member.id === user.id);
-		let react_role = emojiToRole(reaction.emoji.name, react_guild.roles.cache);
-
-		if (react_role) {
-			react_user.roles.remove(react_role);
-			console.log(`${react_role.name} removed from ${react_user.displayName}.`);
-		}
-	}
-});
 
 client.on('guildMemberAdd', user => {
 	try {
