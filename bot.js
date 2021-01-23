@@ -6,7 +6,7 @@
 require('dotenv').config();
 
 const Discord = require('discord.js');
-const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
+const client = new Discord.Client();
 client.login(process.env.DISCORD_TOKEN);
 
 let airplane = [
@@ -238,72 +238,19 @@ function displayHelpMessage(msg) {
 	msg.channel.send(base +'\n'+ help +'\n'+ mc +'\n'+ inv +'\n'+ pog +'\n'+ + xmaspog +'\n'+ alldice);
 }
 
-function emojiToRole(emoji_name, roles_cache) {
-	if (emoji_name === "❤️") {
-		return roles_cache.find(role => role.name === "the heart");
-	}
-	return null;
-}
 
 /* 
  * BOT COMMAND EVENT HANDLERS
  */
 
- client.on('messageReactionAdd', async (reaction, user) => {
-	if (reaction.partial) {
-		try {
-			await reaction.fetch();
-		} catch (error) {
-			console.error('messageReactionAdd: Something went wrong when fetching the message: ', error);
-			return;
-		}
-	}
-
-	if (reaction.message.content.indexOf("OFFICIAL ROLE REACTIONS") != -1) {
-		// User doesn't have roles so we need GuildMember object
-		let react_guild = client.guilds.cache.find(guild => (guild.name === TEST_SERVER && !ROLE_REACTIONS_ACTIVE) ||
-															(guild.name === PROD_SERVER && ROLE_REACTIONS_ACTIVE));
-		let react_user = react_guild.members.cache.find(member => member.id === user.id);
-		let react_role = emojiToRole(reaction.emoji.name, react_guild.roles.cache);
-
-		if (react_role) {
-			react_user.roles.add(react_role);
-			console.log(`${react_role.name} given to ${react_user.displayName}.`);
-		}
-	}
-});
-
-client.on('messageReactionRemove', async (reaction, user) => {
-	if (reaction.partial) {
-		try {
-			await reaction.fetch();
-		} catch (error) {
-			console.error('messageReactionRemove: Something went wrong when fetching the message: ', error);
-			return;
-		}
-	}
-
-	if (reaction.message.content.indexOf("OFFICIAL ROLE REACTIONS") != -1) {
-		// User doesn't have roles so we need GuildMember object
-		let react_guild = client.guilds.cache.find(guild => (guild.name === TEST_SERVER && !ROLE_REACTIONS_ACTIVE) ||
-															(guild.name === PROD_SERVER && ROLE_REACTIONS_ACTIVE));
-		let react_user = react_guild.members.cache.find(member => member.id === user.id);
-		let react_role = emojiToRole(reaction.emoji.name, react_guild.roles.cache);
-
-		if (react_role) {
-			react_user.roles.remove(react_role);
-			console.log(`${react_role.name} removed from ${react_user.displayName}.`);
-		}
-	}
-});
-
 client.on('guildMemberAdd', user => {
 	try {
 		let lounge_channel = user.guild.channels.cache.find(channel => channel.name === 'the-lounge');
 		let intro_channel = user.guild.channels.cache.find(channel => channel.name === 'introductions');
+		if (!lounge_channel) {
+			console.log("Lounge channel couldn't be found.");
+		}
 		let msg = `Welcome ${user} to the May House Discord. Please introduce yourself and drop your real name in the ${intro_channel} channel`;
-		if (!lounge_channel)
-			return;
 		lounge_channel.send(msg);
 	} catch (error) {
 		console.error('guildMemberAdd: Something went wrong when fetching the channels: ', error);
