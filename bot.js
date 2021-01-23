@@ -1,5 +1,5 @@
 
-/* 
+/*
  * BOT INITIALIZATION
  */
 
@@ -22,9 +22,6 @@ let airplane = [
 	"I picked the wrong week to quit sniffing glue."
 ];
 let ninek = ["I'm sory Dave, I'm afraid I can't do that.", "His power level is OVER NINE THOUSAAAAAND"];
-let ROLE_REACTIONS_ACTIVE = false;
-let TEST_SERVER = "DeShadowWolf's Test Server";
-let PROD_SERVER = "May Haus";
 
 client.on('ready', () => {
 	console.log(`Logged in as ${client.user.tag}!`);
@@ -32,7 +29,7 @@ client.on('ready', () => {
 });
 
 
-/* 
+/*
  * BOT FUNCTIONS
  */
 
