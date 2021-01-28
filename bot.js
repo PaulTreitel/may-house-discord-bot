@@ -232,7 +232,7 @@ function displayHelpMessage(msg) {
 	let dice4 = '!4d4+d6 - rolls 4 4-sided dice and a 6-sided die and gives you the sum';
 	let dice5 = '(The \'!r d20\' and \'/r d20\' and \'!roll\' syntaxes are also supported)'
 	let alldice = dice1 +'\n'+ dice2 +'\n'+ dice3 +'\n'+ dice4 + '\n' + dice5;
-	msg.channel.send(base +'\n'+ help +'\n'+ mc +'\n'+ inv +'\n'+ pog +'\n'+ + xmaspog +'\n'+ alldice);
+	msg.channel.send(base +'\n'+ help +'\n'+ mc +'\n'+ inv +'\n'+ pog +'\n'+ xmaspog +'\n'+ alldice);
 }
 
 
