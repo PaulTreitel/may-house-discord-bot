@@ -204,14 +204,9 @@ function parseRoll(ret_str, to_sum, cmd, sign, adv, crits) {
 	return executeRolls(ret_str, to_sum, die, numRolls, sign, adv, crits);
 }
 
-function sendPog(msg) {
-	let pog = client.emojis.cache.find(emoji => emoji.name === "PogChamp");
-	msg.channel.send(`${pog}`);
-}
-
-function sendXmasPog(msg) {
-	let pog = client.emojis.cache.find(emoji => emoji.name === "xmaspog");
-	msg.channel.send(`${pog}`);
+function sendEmoji(msg, emoji_name) {
+	let em = client.emojis.cache.find(emoji => emoji.name === emoji_name);
+	msg.channel.send(`${em}`);
 }
 
 function sendMilk(msg) {
@@ -272,10 +267,10 @@ client.on('message', msg => {
 				msg.channel.send('Nerd!!');
 				break;
 			case 'pog':
-				sendPog(msg);
+				sendEmoji(msg, "PogChamp");
 				break;
 			case 'xmaspog':
-				sendXmasPog(msg);
+				sendEmoji(msg, "xmaspog");
 				break;
 			case 'milk':
 				sendMilk(msg);
