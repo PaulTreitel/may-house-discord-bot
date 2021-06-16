@@ -206,11 +206,19 @@ function parseRoll(ret_str, to_sum, cmd, sign, adv, crits) {
 
 function sendEmoji(msg, emoji_name) {
 	let em = client.emojis.cache.find(emoji => emoji.name === emoji_name);
+	if (!milk) {
+		msg.channel.send(`This bot does not have the required emoji.`)
+		return;
+	}
 	msg.channel.send(`${em}`);
 }
 
 function sendMilk(msg) {
 	let milk = client.emojis.cache.find(emoji => emoji.name === "pour");
+	if (!milk) {
+		msg.channel.send(`This bot does not have the required emoji.`)
+		return;
+	}
 	msg.channel.send(`${milk}\n\:bed:`);
 }
 
@@ -269,8 +277,8 @@ client.on('message', msg => {
 			case 'pog':
 				sendEmoji(msg, "PogChamp");
 				break;
-			case 'xmaspog':
-				sendEmoji(msg, "xmaspog");
+			case 'nerfpog':
+				sendEmoji(msg, "NerfPog");
 				break;
 			case 'milk':
 				sendMilk(msg);
