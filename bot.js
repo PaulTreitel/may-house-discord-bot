@@ -9,19 +9,11 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 client.login(process.env.DISCORD_TOKEN);
 
-let airplane = [
-	"No thank you. I take it black, like my men.",
-	"Ok give me Hamm on 5 and hold the Mayo.",
-	"I am serious...and don't call me Shirley.",
-	"There's no reason to become alarmed, and we hope you'll enjoy the rest of your flight. By the way, is there anyone on board who knows how to fly a plane?",
-	"Joey, have you ever been in a Turkish prison?",
-	"I guess the foot's on the other hand, Kramer.",
-	"I picked the wrong week to quit smoking.",
-	"I picked the wrong week to quit drinking.",
-	"I picked the wrong week to quit amphetamines.",
-	"I picked the wrong week to quit sniffing glue."
-];
-let ninek = ["I'm sory Dave, I'm afraid I can't do that.", "His power level is OVER NINE THOUSAAAAAND"];
+let texts = require("./text.json");
+let help_message = "";
+for (let i = 0; i < texts.help_message.length; i++) {
+	help_message += texts.help_message[i] + "\n"
+}
 
 client.on('ready', () => {
 	console.log(`Logged in as ${client.user.tag}!`);
@@ -137,9 +129,7 @@ function parseDice(args, msg) {
 		ret_str = `${ret_str} => ${sum}`;
 
 	if (crits[1] === 0)
-		ret_str = `${ret_str} and I will pour milk on your bed.`; // discovered
-	else if (crits[0] === crits[1] && crits[0] != 0)
-		ret_str = `${ret_str} CO-CO-CO-COMBO BREAKER!`; // discovered
+		ret_str = `${ret_str} ${texts.dice_phrases[0]}`; // discovered
 
 	msg.reply(ret_str);
 }
@@ -175,30 +165,30 @@ function parseRoll(ret_str, to_sum, cmd, sign, adv, crits) {
 		return `${ret_str}(420)`; // discovered
 	} else if (die === 9000) {
 		crits[1]++;
-		let line = ninek[Math.floor(Math.random() * ninek.length)];
+		let line = texts.nine_thousand[Math.floor(Math.random() * texts.nine_thousand.length)];
 		return `${ret_str}${line}`;
 	} else if (die === 42) {
 		crits[1]++;
-		return `${ret_str}Six by nine. Forty two. That's it. That's all there is.`; // discovered
+		return `${ret_str}${texts.dice_phrases[1]}`; // discovered
 	} else if (die === 80) {
 		crits[1]++;
-		let line = airplane[Math.floor(Math.random() * airplane.length)];
+		let line = texts.airplane[Math.floor(Math.random() * texts.airplane.length)];
 		return `${ret_str}${line}`;
 	} else if (die === 67) {
 		ret_str = executeRolls(ret_str, to_sum, die, numRolls, sign, adv, crits);
-		return `${ret_str} Arion returns again!`;
+		return `${ret_str} ${texts.dice_phrases[2]}`;
 	} else if (die === 1453) {
 		ret_str = executeRolls(ret_str, to_sum, die, numRolls, sign, adv, crits);
-		return `${ret_str} CONSTANTINOPLE WILL RISE AGAIN!`;
+		return `${ret_str} ${texts.dice_phrases[3]}`;
 	} else if (die === 5) {
 		ret_str = executeRolls(ret_str, to_sum, die, numRolls, sign, adv, crits);
-		return `${ret_str} Pissboi the Fifth, reporting in.`; // discovered
+		return `${ret_str} ${texts.dice_phrases[4]}`; // discovered
 	} else if (die === 64) {
 		crits[1]++;
-		return `${ret_str}My name is Pussy Galore.`;
+		return `${ret_str}${texts.dice_phrases[5]}`;
 	} else if (die === 106) {
 		crits[1]++;
-		return `${ret_str}Rest In Peace, Milo Malar`;
+		return `${ret_str}${texts.dice_phrases[6]}`;
 	}
 
 	return executeRolls(ret_str, to_sum, die, numRolls, sign, adv, crits);
@@ -223,6 +213,8 @@ function sendMilk(msg) {
 }
 
 function displayHelpMessage(msg) {
+	msg.channel.send(help_message.substring(0, help_message.length-1));
+	/*
 	let base = 'all commands must be put after an \'!\', like \'!mayhelp\'';
 	let help = '!mayhelp - use this command to display this help message';
 	let mc = '!mcserver - use this command to get the address of the May House Minecraft server';
@@ -236,6 +228,7 @@ function displayHelpMessage(msg) {
 	let dice5 = '(The \'!r d20\' and \'/r d20\' and \'!roll\' syntaxes are also supported)'
 	let alldice = dice1 +'\n'+ dice2 +'\n'+ dice3 +'\n'+ dice4 + '\n' + dice5;
 	msg.channel.send(base +'\n'+ help +'\n'+ mc +'\n'+ inv +'\n'+ pog +'\n'+ xmaspog +'\n'+ alldice);
+	*/
 }
 
 
@@ -243,19 +236,6 @@ function displayHelpMessage(msg) {
  * BOT COMMAND EVENT HANDLERS
  */
 
-client.on('guildMemberAdd', user => {
-	try {
-		let lounge_channel = user.guild.channels.cache.find(channel => channel.name === 'the-lounge');
-		let intro_channel = user.guild.channels.cache.find(channel => channel.name === 'introductions');
-		if (!lounge_channel) {
-			console.log("Lounge channel couldn't be found.");
-		}
-		let msg = `Welcome ${user} to the May House Discord. Please introduce yourself and drop your real name in the ${intro_channel} channel`;
-		lounge_channel.send(msg);
-	} catch (error) {
-		console.error('guildMemberAdd: Something went wrong when fetching the channels: ', error);
-	}
-});
 
 client.on('message', msg => {
 	let args = msg.toString().substring(1).split(' ');
