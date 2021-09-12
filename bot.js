@@ -196,7 +196,7 @@ function parseRoll(ret_str, to_sum, cmd, sign, adv, crits) {
 
 function sendEmoji(msg, emoji_name) {
 	let em = client.emojis.cache.find(emoji => emoji.name === emoji_name);
-	if (!milk) {
+	if (!em) {
 		msg.channel.send(`This bot does not have the required emoji.`)
 		return;
 	}
