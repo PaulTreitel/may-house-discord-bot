@@ -11,15 +11,9 @@
 		"I picked the wrong week to quit amphetamines.",
 		"I picked the wrong week to quit sniffing glue."],
 
-	"nine_thousand" : [
-		"I'm sory Dave, I'm afraid I can't do that.", 
-		"His power level is OVER NINE THOUSAAAAAND"],
-
 	"dice_phrases" : [
 		"and I will pour milk on your bed.",
 		"Six by nine. Forty two. That's it. That's all there is.",
-		"Arion returns again!",
-		"CONSTANTINOPLE WILL RISE AGAIN!",
 		"Pissboi the Fifth, reporting in.",
 		"My name is Pussy Galore.",
 		"Rest In Peace, Milo Malar"],
@@ -35,5 +29,10 @@
 		"!2d10+2 - rolls 2 10-sided dice and gives you the sum plus 2",
 		"!d20 advantage - rolls 2 20-sided dice and gives you the higher number",
 		"!4d4+d6 - rolls 4 4-sided dice and a 6-sided die and gives you the sum",
-		"(The '!r' and '/r' and '!roll' syntaxes are also supported)"]
+		"(The '!r' and '/r' and '!roll' syntaxes are also supported)"],
+
+	"may_servers" : [
+		687870307947774004,
+		852257729459257374
+	]
 }

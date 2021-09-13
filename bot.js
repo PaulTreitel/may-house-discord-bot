@@ -14,6 +14,12 @@ let help_message = "";
 for (let i = 0; i < texts.help_message.length; i++) {
 	help_message += texts.help_message[i] + "\n"
 }
+let dice_help = "";
+for (let i = 6; i < texts.help_message.length; i++) {
+	dice_help += texts.help_message[i] + "\n"
+}
+
+
 
 client.on('ready', () => {
 	console.log(`Logged in as ${client.user.tag}!`);
@@ -100,7 +106,7 @@ function parseDice(args, msg) {
 		} else {
 			if (sign < 0)
 				ret_str = ret_str.substring(0, ret_str.length - 2) +"- ";
-			ret_str = parseRoll(ret_str, to_sum, cur_expr, sign, adv, crits);
+			ret_str = parseRoll(ret_str, to_sum, cur_expr, sign, adv, crits, msg);
 			if (typeof ret_str === 'undefined' || to_sum === [])
 				return;
 		}
@@ -134,7 +140,7 @@ function parseDice(args, msg) {
 	msg.reply(ret_str);
 }
 
-function parseRoll(ret_str, to_sum, cmd, sign, adv, crits) {
+function parseRoll(ret_str, to_sum, cmd, sign, adv, crits, msg) {
 	let d = cmd.search('d|D');
 	if (d == -1) {
 		console.log('Error: no die roll');
@@ -163,10 +169,6 @@ function parseRoll(ret_str, to_sum, cmd, sign, adv, crits) {
 		crits[1]++;
 		to_sum.push(420);
 		return `${ret_str}(420)`; // discovered
-	} else if (die === 9000) {
-		crits[1]++;
-		let line = texts.nine_thousand[Math.floor(Math.random() * texts.nine_thousand.length)];
-		return `${ret_str}${line}`;
 	} else if (die === 42) {
 		crits[1]++;
 		return `${ret_str}${texts.dice_phrases[1]}`; // discovered
@@ -174,28 +176,26 @@ function parseRoll(ret_str, to_sum, cmd, sign, adv, crits) {
 		crits[1]++;
 		let line = texts.airplane[Math.floor(Math.random() * texts.airplane.length)];
 		return `${ret_str}${line}`;
-	} else if (die === 67) {
-		ret_str = executeRolls(ret_str, to_sum, die, numRolls, sign, adv, crits);
-		return `${ret_str} ${texts.dice_phrases[2]}`;
-	} else if (die === 1453) {
-		ret_str = executeRolls(ret_str, to_sum, die, numRolls, sign, adv, crits);
-		return `${ret_str} ${texts.dice_phrases[3]}`;
-	} else if (die === 5) {
-		ret_str = executeRolls(ret_str, to_sum, die, numRolls, sign, adv, crits);
-		return `${ret_str} ${texts.dice_phrases[4]}`; // discovered
-	} else if (die === 64) {
-		crits[1]++;
-		return `${ret_str}${texts.dice_phrases[5]}`;
-	} else if (die === 106) {
-		crits[1]++;
-		return `${ret_str}${texts.dice_phrases[6]}`;
+	}
+
+	if (isMayServer(msg)) {
+		if (die === 5) {
+			ret_str = executeRolls(ret_str, to_sum, die, numRolls, sign, adv, crits);
+			return `${ret_str} ${texts.dice_phrases[2]}`; // discovered
+		} else if (die === 64) {
+			crits[1]++;
+			return `${ret_str}${texts.dice_phrases[3]}`;
+		} else if (die === 106) {
+			crits[1]++;
+			return `${ret_str}${texts.dice_phrases[4]}`;
+		}
 	}
 
 	return executeRolls(ret_str, to_sum, die, numRolls, sign, adv, crits);
 }
 
 function sendEmoji(msg, emoji_name) {
-	let em = client.emojis.cache.find(emoji => emoji.name === emoji_name);
+	let em = msg.guild.emojis.cache.find(emoji => emoji.name === emoji_name);
 	if (!em) {
 		msg.channel.send(`This bot does not have the required emoji.`)
 		return;
@@ -204,7 +204,7 @@ function sendEmoji(msg, emoji_name) {
 }
 
 function sendMilk(msg) {
-	let milk = client.emojis.cache.find(emoji => emoji.name === "pour");
+	let milk = msg.guild.emojis.cache.find(emoji => emoji.name === "pour");
 	if (!milk) {
 		msg.channel.send(`This bot does not have the required emoji.`)
 		return;
@@ -212,8 +212,26 @@ function sendMilk(msg) {
 	msg.channel.send(`${milk}\n\:bed:`);
 }
 
+function displayDiceHelpMessage(msg) {
+	msg.channel.send(dice_help.substring(0, dice_help.length-1))
+}
+
 function displayHelpMessage(msg) {
 	msg.channel.send(help_message.substring(0, help_message.length-1));
+}
+
+
+function isMayServer(msg) {
+	if (msg.guild == null) {
+		return false;
+	}
+
+	for (let i = 0; i < texts.may_servers.length; i++) {
+		if (texts.may_servers[i] === msg.guild.id) {
+			return true;
+		}
+	}
+	return false;
 }
 
 
@@ -229,40 +247,58 @@ client.on('message', msg => {
 	if (msg_str.substring(0, 1) == '!') {
 		let cmd = args[0].toLowerCase();
 
-		switch (cmd) {
-			case 'mcserver':
-				msg.channel.send('The Minecraft server address is 207.244.79.120:64635');
-				break;
-			case 'mayinvite':
-				msg.channel.send('The server invite is https://discord.gg/7FuX6mK');
-				break;
-			case 'nerd':
-				msg.channel.send('Nerd!!');
-				break;
-			case 'pog':
-				sendEmoji(msg, "PogChamp");
-				break;
-			case 'nerfpog':
-				sendEmoji(msg, "NerfPog");
-				break;
-			case 'milk':
-				sendMilk(msg);
-				break;
-			case 'mayhelp':
-				displayHelpMessage(msg);
-				break;
-			case 'roll':
-			case 'r':
-				parseDice(args.splice(1), msg);
-				break;
-			case '':
-				break;
-			default:
-				parseDice(args, msg);
-				break;
+		if (isMayServer(msg)) {
+			switch (cmd) {
+				case 'test':
+					console.log(msg.guild.emojis.cache);
+					break;
+				case 'mcserver':
+					msg.channel.send('The Minecraft server address is 207.244.79.120:64635');
+					break;
+				case 'mayinvite':
+					msg.channel.send('The server invite is https://discord.gg/7FuX6mK');
+					break;
+				case 'nerd':
+					msg.channel.send('Nerd!!');
+					break;
+				case 'pog':
+					sendEmoji(msg, "PogChamp");
+					break;
+				case 'nerfpog':
+					sendEmoji(msg, "NerfPog");
+					break;
+				case 'milk':
+					sendMilk(msg);
+					break;
+				case 'mayhelp':
+					displayHelpMessage(msg);
+					break;
+				case '':
+					break;
+				case 'roll':
+				case 'r':
+				default:
+					parseDice(args, msg);
+					break;
+			}
+		} else {
+
+			switch(cmd) {
+				case 'nerd':
+					msg.channel.send('Nerd!!');
+					break;
+				case 'help':
+					displayDiceHelpMessage(msg)
+					break;
+				case '':
+					break;
+				default:
+					parseDice(args, msg);
+					break;
+			}
 		}
 
-	} else if (msg_str.substring(0, 2) === '/r' || msg_str.substring(0, 2) === '/R') {
+	} else if (msg_str.substring(0, 2).toLowerCase() === '/r') {
 		parseDice(args.splice(1), msg);
 	}
 });
