@@ -5,8 +5,8 @@
 
 require('dotenv').config();
 
-const Discord = require('discord.js');
-const client = new Discord.Client();
+const { Client, Intents } = require('discord.js');
+const client = new Client({intents:["GUILDS", "GUILD_MESSAGES", "DIRECT_MESSAGES"], partials: ["CHANNEL"]});
 client.login(process.env.DISCORD_TOKEN);
 
 let texts = require("./text.json");
@@ -197,27 +197,27 @@ function parseRoll(ret_str, to_sum, cmd, sign, adv, crits, msg) {
 function sendEmoji(msg, emoji_name) {
 	let em = msg.guild.emojis.cache.find(emoji => emoji.name === emoji_name);
 	if (!em) {
-		msg.channel.send(`This bot does not have the required emoji.`)
+		msg.reply(`This bot does not have the required emoji.`)
 		return;
 	}
-	msg.channel.send(`${em}`);
+	msg.reply(`${em}`);
 }
 
 function sendMilk(msg) {
 	let milk = msg.guild.emojis.cache.find(emoji => emoji.name === "pour");
 	if (!milk) {
-		msg.channel.send(`This bot does not have the required emoji.`)
+		msg.reply(`This bot does not have the required emoji.`)
 		return;
 	}
-	msg.channel.send(`${milk}\n\:bed:`);
+	msg.reply(`${milk}\n\:bed:`);
 }
 
 function displayDiceHelpMessage(msg) {
-	msg.channel.send(dice_help.substring(0, dice_help.length-1))
+	msg.reply(dice_help.substring(0, dice_help.length-1))
 }
 
 function displayHelpMessage(msg) {
-	msg.channel.send(help_message.substring(0, help_message.length-1));
+	msg.reply(help_message.substring(0, help_message.length-1));
 }
 
 
@@ -240,7 +240,7 @@ function isMayServer(msg) {
  */
 
 
-client.on('message', msg => {
+client.on('messageCreate', msg => {
 	let args = msg.toString().substring(1).split(' ');
 	let msg_str = msg.toString().toLowerCase();
 
@@ -252,11 +252,8 @@ client.on('message', msg => {
 				case 'test':
 					console.log(msg.guild.emojis.cache);
 					break;
-				case 'mcserver':
-					msg.channel.send('The Minecraft server address is 207.244.79.120:64635');
-					break;
 				case 'mayinvite':
-					msg.channel.send('The server invite is https://discord.gg/7FuX6mK');
+					msg.reply('The server invite is https://discord.gg/7FuX6mK');
 					break;
 				case 'nerd':
 					msg.channel.send('Nerd!!');
