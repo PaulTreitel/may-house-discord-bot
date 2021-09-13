@@ -35,9 +35,9 @@ function getRandInt(min, mx) {
 	return Math.floor(Math.random() * (mx - min + 1)) + min;
 }
 
-function executeRolls(ret_str, to_sum, die, num, sign, adv, crits) {
+function executeRolls(return_str, to_sum, die, num, sign, adv, crits) {
 	adv_list = [];
-	ret_str = ret_str + '(';
+	return_str = return_str + '(';
 
 	if (adv != 0 && num == 1)
 		num = 2;
@@ -51,15 +51,15 @@ function executeRolls(ret_str, to_sum, die, num, sign, adv, crits) {
 		if (adv == 0) {
 			to_sum.push(roll * sign);
 			if ((i + 1) < num)
-				ret_str = `${ret_str}${roll} + `;
+				return_str = `${return_str}${roll} + `;
 			else
-				ret_str = `${ret_str}${roll})`;
+				return_str = `${return_str}${roll})`;
 		} else {
 			adv_list.push(roll);
 			if ((i + 1) < num)
-				ret_str = `${ret_str}${roll}, `;
+				return_str = `${return_str}${roll}, `;
 			else
-				ret_str = `${ret_str}${roll})`;
+				return_str = `${return_str}${roll})`;
 		}
 	}
 
@@ -68,11 +68,11 @@ function executeRolls(ret_str, to_sum, die, num, sign, adv, crits) {
 	else if (adv == -1)
 		to_sum.push(Math.min(...adv_list) * sign);
 
-	return ret_str;
+	return return_str;
 }
 
 function parseDice(args, msg) {
-	let ret_str = '';
+	let return_str = '';
 	let to_sum = [];
 	let crits = [0, 0];
 	let cmd = args[0];
@@ -105,9 +105,9 @@ function parseDice(args, msg) {
 			mod += parseInt(cur_expr)  * sign;
 		} else {
 			if (sign < 0)
-				ret_str = ret_str.substring(0, ret_str.length - 2) +"- ";
-			ret_str = parseRoll(ret_str, to_sum, cur_expr, sign, adv, crits, msg);
-			if (typeof ret_str === 'undefined' || to_sum === [])
+				return_str = return_str.substring(0, return_str.length - 2) +"- ";
+			return_str = parseRoll(return_str, to_sum, cur_expr, sign, adv, crits, msg);
+			if (typeof return_str === 'undefined' || to_sum === [])
 				return;
 		}
 
@@ -117,30 +117,30 @@ function parseDice(args, msg) {
 			break;
 
 		if (isNaN(cur_expr))
-			ret_str = ret_str + ` + `;
+			return_str = return_str + ` + `;
 	}
 
 	if (mod < 0)
-		ret_str = `${ret_str.substring(0, ret_str.length - 2)}- ${Math.abs(mod)}`;
+		return_str = `${return_str.substring(0, return_str.length - 2)}- ${Math.abs(mod)}`;
 	else if (mod > 0)
-		ret_str = `${ret_str}${mod}`;
+		return_str = `${return_str}${mod}`;
 
 	let sum = mod;
 
 	for (let i = 0; i < to_sum.length; i++)
 		sum += to_sum[i];
 	if (adv == 0)
-		ret_str = `${ret_str} = ${sum}`;
+		return_str = `${return_str} = ${sum}`;
 	else
-		ret_str = `${ret_str} => ${sum}`;
+		return_str = `${return_str} => ${sum}`;
 
 	if (crits[1] === 0)
-		ret_str = `${ret_str} ${texts.dice_phrases[0]}`; // discovered
+		return_str = `${return_str} ${texts.dice_phrases[0]}`; // discovered
 
-	msg.reply(ret_str);
+	msg.reply(return_str);
 }
 
-function parseRoll(ret_str, to_sum, cmd, sign, adv, crits, msg) {
+function parseRoll(return_str, to_sum, cmd, sign, adv, crits, msg) {
 	let d = cmd.search('d|D');
 	if (d == -1) {
 		console.log('Error: no die roll');
@@ -164,34 +164,34 @@ function parseRoll(ret_str, to_sum, cmd, sign, adv, crits, msg) {
 	if (die === 420) {
 		crits[1]++;
 		to_sum.push(69);
-		return `${ret_str}(69)`; // discovered
+		return `${return_str}(69)`; // discovered
 	} else if (die === 69) {
 		crits[1]++;
 		to_sum.push(420);
-		return `${ret_str}(420)`; // discovered
+		return `${return_str}(420)`; // discovered
 	} else if (die === 42) {
 		crits[1]++;
-		return `${ret_str}${texts.dice_phrases[1]}`; // discovered
+		return `${return_str}${texts.dice_phrases[1]}`; // discovered
 	} else if (die === 80) {
 		crits[1]++;
 		let line = texts.airplane[Math.floor(Math.random() * texts.airplane.length)];
-		return `${ret_str}${line}`;
+		return `${return_str}${line}`;
 	}
 
 	if (isMayServer(msg)) {
 		if (die === 5) {
-			ret_str = executeRolls(ret_str, to_sum, die, numRolls, sign, adv, crits);
-			return `${ret_str} ${texts.dice_phrases[2]}`; // discovered
+			return_str = executeRolls(return_str, to_sum, die, numRolls, sign, adv, crits);
+			return `${return_str} ${texts.dice_phrases[2]}`; // discovered
 		} else if (die === 64) {
 			crits[1]++;
-			return `${ret_str}${texts.dice_phrases[3]}`;
+			return `${return_str}${texts.dice_phrases[3]}`;
 		} else if (die === 106) {
 			crits[1]++;
-			return `${ret_str}${texts.dice_phrases[4]}`;
+			return `${return_str}${texts.dice_phrases[4]}`;
 		}
 	}
 
-	return executeRolls(ret_str, to_sum, die, numRolls, sign, adv, crits);
+	return executeRolls(return_str, to_sum, die, numRolls, sign, adv, crits);
 }
 
 function sendEmoji(msg, emoji_name) {
@@ -213,7 +213,7 @@ function sendMilk(msg) {
 }
 
 function displayDiceHelpMessage(msg) {
-	msg.reply(dice_help.substring(0, dice_help.length-1))
+	msg.reply(dice_help.substring(0, dice_help.length-1));
 }
 
 function displayHelpMessage(msg) {
@@ -249,14 +249,21 @@ client.on('messageCreate', msg => {
 
 		if (isMayServer(msg)) {
 			switch (cmd) {
-				case 'test':
-					console.log(msg.guild.emojis.cache);
-					break;
 				case 'mayinvite':
 					msg.reply('The server invite is https://discord.gg/7FuX6mK');
 					break;
 				case 'nerd':
-					msg.channel.send('Nerd!!');
+					if (msg.channel.partial) {
+						msg.channel.fetch()
+							.then(ch => {
+								ch.send('Nerd!!');
+							})
+							.catch(error => {
+								console.log('Something went wrong when fetching the message: ', error);
+							});
+					} else {
+						msg.channel.send('Nerd!!');
+					}
 					break;
 				case 'pog':
 					sendEmoji(msg, "PogChamp");
@@ -282,10 +289,20 @@ client.on('messageCreate', msg => {
 
 			switch(cmd) {
 				case 'nerd':
-					msg.channel.send('Nerd!!');
+					if (msg.channel.partial) {
+						msg.channel.fetch()
+							.then(ch => {
+								ch.send('Nerd!!');
+							})
+							.catch(error => {
+								console.log('Something went wrong when fetching the message: ', error);
+							});
+					} else {
+						msg.channel.send('Nerd!!');
+					}
 					break;
 				case 'help':
-					displayDiceHelpMessage(msg)
+					displayDiceHelpMessage(msg);
 					break;
 				case '':
 					break;
