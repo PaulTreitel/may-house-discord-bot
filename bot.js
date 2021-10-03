@@ -250,7 +250,7 @@ client.on('messageCreate', msg => {
 		if (isMayServer(msg)) {
 			switch (cmd) {
 				case 'mayinvite':
-					msg.reply('The server invite is https://discord.gg/7FuX6mK');
+					msg.reply('The server invite is https://discord.gg/UEXyqP9NsS');
 					break;
 				case 'nerd':
 					if (msg.channel.partial) {
