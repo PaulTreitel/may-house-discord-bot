@@ -234,6 +234,20 @@ function isMayServer(msg) {
 	return false;
 }
 
+function sendMessage(prompt_msg, to_send) {
+	if (msg.channel.partial) {
+		msg.channel.fetch()
+			.then(ch => {
+				ch.send(to_send);
+			})
+			.catch(error => {
+				console.log('Something went wrong when fetching the message: ', error);
+			});
+	} else {
+		msg.channel.send(to_send);
+	}
+}
+
 
 /* 
  * BOT COMMAND EVENT HANDLERS
@@ -253,17 +267,7 @@ client.on('messageCreate', msg => {
 					msg.reply('The server invite is https://discord.gg/UEXyqP9NsS');
 					break;
 				case 'nerd':
-					if (msg.channel.partial) {
-						msg.channel.fetch()
-							.then(ch => {
-								ch.send('Nerd!!');
-							})
-							.catch(error => {
-								console.log('Something went wrong when fetching the message: ', error);
-							});
-					} else {
-						msg.channel.send('Nerd!!');
-					}
+					sendMessage(msg, "Nerd!!")
 					break;
 				case 'pog':
 					sendEmoji(msg, "PogChamp");
@@ -282,24 +286,14 @@ client.on('messageCreate', msg => {
 				case 'roll':
 				case 'r':
 				default:
-					parseDice(args, msg);
+					parseDice(args.splice(1), msg);
 					break;
 			}
 		} else {
 
 			switch(cmd) {
 				case 'nerd':
-					if (msg.channel.partial) {
-						msg.channel.fetch()
-							.then(ch => {
-								ch.send('Nerd!!');
-							})
-							.catch(error => {
-								console.log('Something went wrong when fetching the message: ', error);
-							});
-					} else {
-						msg.channel.send('Nerd!!');
-					}
+					sendMessage(msg, "Nerd!!")
 					break;
 				case 'help':
 					displayDiceHelpMessage(msg);
@@ -307,7 +301,7 @@ client.on('messageCreate', msg => {
 				case '':
 					break;
 				default:
-					parseDice(args, msg);
+					parseDice(args.splice(1), msg);
 					break;
 			}
 		}
