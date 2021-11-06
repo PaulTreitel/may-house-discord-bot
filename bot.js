@@ -81,6 +81,8 @@ function parseDice(args, msg) {
 	let cur_expr = '';
 	let next_idx = 0;
 	let adv = 0;
+	if (cmd == undefined)
+		return;
 
 	if (args.length > 1 && args[1] === "adv")
 		adv = 1;
