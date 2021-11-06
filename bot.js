@@ -235,8 +235,8 @@ function isMayServer(msg) {
 }
 
 function sendMessage(prompt_msg, to_send) {
-	if (msg.channel.partial) {
-		msg.channel.fetch()
+	if (prompt_msg.channel.partial) {
+		prompt_msg.channel.fetch()
 			.then(ch => {
 				ch.send(to_send);
 			})
@@ -244,7 +244,7 @@ function sendMessage(prompt_msg, to_send) {
 				console.log('Something went wrong when fetching the message: ', error);
 			});
 	} else {
-		msg.channel.send(to_send);
+		prompt_msg.channel.send(to_send);
 	}
 }
 
