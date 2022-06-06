@@ -10,15 +10,18 @@ const client = new Client({intents:["GUILDS", "GUILD_MESSAGES", "DIRECT_MESSAGES
 client.login(process.env.DISCORD_TOKEN);
 
 let texts = require("./text.json");
+
 let help_message = "";
 for (let i = 0; i < texts.help_message.length; i++) {
 	help_message += texts.help_message[i] + "\n"
 }
-let dice_help = "";
-for (let i = 6; i < texts.help_message.length; i++) {
-	dice_help += texts.help_message[i] + "\n"
-}
+help_message = help_message.substring(0, help_message.length - 1);
 
+let dice_help_message = "";
+for (let i = 0; i < texts.dice_help_message.length; i++) {
+	dice_help_message += texts.dice_help_message[i] + "\n"
+}
+dice_help_message = dice_help_message.substring(0, dice_help_message.length-1);
 
 
 client.on('ready', () => {
@@ -81,8 +84,10 @@ function parseDice(args, msg) {
 	let cur_expr = '';
 	let next_idx = 0;
 	let adv = 0;
-	if (cmd == undefined)
+	if (cmd == undefined) {
+		console.log("no command");
 		return;
+	}
 
 	if (args.length > 1 && args[1] === "adv")
 		adv = 1;
@@ -109,8 +114,10 @@ function parseDice(args, msg) {
 			if (sign < 0)
 				return_str = return_str.substring(0, return_str.length - 2) +"- ";
 			return_str = parseRoll(return_str, to_sum, cur_expr, sign, adv, crits, msg);
-			if (typeof return_str === 'undefined' || to_sum === [])
+			if (typeof return_str === 'undefined' || to_sum === []) {
+				console.log("roll failed to parse");
 				return;
+			}
 		}
 
 		if (next_idx > curr_idx && next_idx < cmd.length)
@@ -178,19 +185,15 @@ function parseRoll(return_str, to_sum, cmd, sign, adv, crits, msg) {
 		crits[1]++;
 		let line = texts.airplane[Math.floor(Math.random() * texts.airplane.length)];
 		return `${return_str}${line}`;
-	}
-
-	if (isMayServer(msg)) {
-		if (die === 5) {
-			return_str = executeRolls(return_str, to_sum, die, numRolls, sign, adv, crits);
-			return `${return_str} ${texts.dice_phrases[2]}`; // discovered
-		} else if (die === 64) {
-			crits[1]++;
-			return `${return_str}${texts.dice_phrases[3]}`;
-		} else if (die === 106) {
-			crits[1]++;
-			return `${return_str}${texts.dice_phrases[4]}`;
-		}
+	} else if (die === 5) {
+		return_str = executeRolls(return_str, to_sum, die, numRolls, sign, adv, crits);
+		return `${return_str} ${texts.dice_phrases[2]}`; // discovered
+	} else if (die === 64) {
+		crits[1]++;
+		return `${return_str}${texts.dice_phrases[3]}`;
+	} else if (die === 106) {
+		crits[1]++;
+		return `${return_str}${texts.dice_phrases[4]}`;
 	}
 
 	return executeRolls(return_str, to_sum, die, numRolls, sign, adv, crits);
@@ -215,25 +218,11 @@ function sendMilk(msg) {
 }
 
 function displayDiceHelpMessage(msg) {
-	msg.reply(dice_help.substring(0, dice_help.length-1));
+	msg.reply(dice_help_message);
 }
 
 function displayHelpMessage(msg) {
-	msg.reply(help_message.substring(0, help_message.length-1));
-}
-
-
-function isMayServer(msg) {
-	if (msg.guild == null) {
-		return false;
-	}
-
-	for (let i = 0; i < texts.may_servers.length; i++) {
-		if (texts.may_servers[i] === msg.guild.id) {
-			return true;
-		}
-	}
-	return false;
+	msg.reply(help_message);
 }
 
 function sendMessage(prompt_msg, to_send) {
@@ -263,51 +252,44 @@ client.on('messageCreate', msg => {
 	if (msg_str.substring(0, 1) == '!') {
 		let cmd = args[0].toLowerCase();
 
-		if (isMayServer(msg)) {
-			switch (cmd) {
-				case 'mayinvite':
-					msg.reply('The server invite is https://discord.gg/UEXyqP9NsS');
-					break;
-				case 'nerd':
-					sendMessage(msg, "Nerd!!")
-					break;
-				case 'pog':
-					sendEmoji(msg, "PogChamp");
-					break;
-				case 'nerfpog':
-					sendEmoji(msg, "NerfPog");
-					break;
-				case 'milk':
-					sendMilk(msg);
-					break;
-				case 'mayhelp':
-					displayHelpMessage(msg);
-					break;
-				case '':
-					break;
-				case 'roll':
-				case 'r':
-				default:
-					parseDice(args.splice(1), msg);
-					break;
-			}
-		} else {
-
-			switch(cmd) {
-				case 'nerd':
-					sendMessage(msg, "Nerd!!")
-					break;
-				case 'help':
-					displayDiceHelpMessage(msg);
-					break;
-				case '':
-					break;
-				default:
-					parseDice(args.splice(1), msg);
-					break;
-			}
+		switch (cmd) {
+			case 'mayinvite':
+				msg.reply(`The server invite is ${texts.server_invite}`);
+				break;
+			case 'nerd':
+				sendMessage(msg, "Nerd!!")
+				break;
+			case 'pog':
+				sendEmoji(msg, "PogChamp");
+				break;
+			case 'nerfpog':
+				sendEmoji(msg, "NerfPog");
+				break;
+			case 'milk':
+				sendMilk(msg);
+				break;
+			case 'mayhelp':
+				displayHelpMessage(msg);
+				break;
+			case 'dicehelp':
+				displayDiceHelpMessage(msg);
+				break;
+			case 'mcserver':
+				msg.reply(`${texts.mc_server_info}`);
+				break;
+			case 'botinfo':
+				msg.reply(`${texts.botinfo}`);
+				break;
+			case '':
+				break;
+			case 'roll':
+			case 'r':
+				parseDice(args.splice(1), msg);
+				break;
+			default:
+				parseDice(args, msg);
+				break;
 		}
-
 	} else if (msg_str.substring(0, 2).toLowerCase() === '/r') {
 		parseDice(args.splice(1), msg);
 	}

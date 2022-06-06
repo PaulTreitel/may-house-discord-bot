@@ -20,19 +20,28 @@
 
 	"help_message" : [
 		"all commands must be put after an '!', like '!mayhelp'",
-		"!mayhelp - use this command to display this help message",
-		"!mcserver - use this command to get the address of the May House Minecraft server",
-		"!mayinvite - use this command to get the permanent invitation URL so more people can join the server",
+		"!mayhelp displays this help message",
+		"!mcserver displays info about the May House Minecraft server",
+		"!mayinvite displays a permanent invitation URL for this server (don't abuse!)",
 		"!pog drops a :PogChamp: in chat",
 		"!nerfpog drops a :NerfPog: in chat",
-		"![number of dice]d[die type]+...+[modifier] [adv|disadv|dadv] - use this command to simulate die rolls, for example",
-		"!2d10+2 - rolls 2 10-sided dice and gives you the sum plus 2",
-		"!d20 advantage - rolls 2 20-sided dice and gives you the higher number",
-		"!4d4+d6 - rolls 4 4-sided dice and a 6-sided die and gives you the sum",
-		"(The '!r' and '/r' and '!roll' syntaxes are also supported)"],
+		"this bot can also roll virtual dice. See !dicehelp for more info",
+		"!botinfo displays info about the bot developer"],
 
-	"may_servers" : [
-		687870307947774004,
-		852257729459257374
-	]
+	"dice_help_message" : [
+		"The bot can roll dice. The syntax is:",
+		"!r [number of dice]d[die type]+...+[modifier] [adv|disadv|dadv]",
+		"for example",
+		"\t\t!r 2d10+2 - rolls 2 10-sided dice and gives you the sum plus 2",
+		"\t\t!r d20 adv - rolls 2 20-sided dice and gives you the higher number",
+		"\t\t\t(you can use \"adv\" or \"advantage\" and \"dadv\" or \"disadvantage\")",
+		"\t\t!r 4d4+d6 - rolls 4 4-sided dice and a 6-sided die and gives you the sum",
+		"You can write the commands as '!r d6' or '/r d6' or '!roll d6' or just '!d6'."
+	],
+
+	"server_invite" : "https://discord.gg/UEXyqP9NsS",
+
+	"mc_server_info" : "This is still under development.",
+
+	"botinfo" : "This bot was developed by Paul Treitel, <@193874683597160448>. The source code is available on Github, contact Paul for more information."
 }
